@@ -51,9 +51,14 @@ module.exports =
       {
             path: path.resolve(__dirname, "src/dist"),
             filename: "bundle.js",
+            publicPath: '/'
       },
       plugins: 
       [
+            new webpack.ProvidePlugin({
+                  Buffer: ['buffer', 'Buffer'],
+              }),
+
             new HTMLWebpackPlugin(
                   {
                         template: "./src/dist/index.html"
@@ -62,6 +67,7 @@ module.exports =
       ],
       devServer: 
       {
+            historyApiFallback: true,
             static: path.resolve(__dirname, "src/dist"),
             hot: true,
             port: 6969,

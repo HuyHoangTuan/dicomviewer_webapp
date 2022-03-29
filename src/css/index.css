@@ -1,3 +1,128 @@
-body {
+*{
       margin: 0;
+      padding: 0;
+}
+[id|='btn']
+{
+      padding: 5px;
+      border: 1px solid #fff2;
+}
+[id|='btn']:hover
+{
+      
+      cursor: pointer;
+      background: #fff5;
+      
+}
+[id|='btn']:active
+{
+      /* background: #000b; */
+      box-shadow: inset 1rem 1rem 20px #000b;
+}
+
+html
+{
+      font-size: 14px;
+}
+body 
+{
+      margin: 0;
+      padding: 0;
+}
+
+.patient-infor
+{
+      height: 100%;
+      overflow: scroll;
+      margin-left: 15px;
+}
+
+.patient-infor > li
+{
+      list-style-type: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+}
+.patient-infor > li > span:first-child
+{
+      font-size: 1.0rem;
+      font-weight: 700;
+}
+.patient-infor > li > span:nth-child(2)
+{
+      overflow: hidden;
+}
+
+.image-manipulator
+{
+      display: grid;
+      grid-template-rows: 3rem 1fr;
+      justify-items: center;
+      width: 100vw;
+      height: 100vh;
+}
+.image-manipulator > .task-bar
+{
+      width: 100%;
+      background-color: #222;
+      display: flex;
+      justify-content: center;
+}
+.image-manipulator > .task-bar > div
+{
+      padding: 5px;
+      display: grid;
+      justify-items: center;
+      grid-template-rows: 1.5fr 1fr;
+      min-width: 65px;
+}
+.image-manipulator > .task-bar > div > span
+{
+      color:#fff;
+      font-size: 0.75rem;
+}
+.image-manipulator > .patient-pic
+{
+      background-color: black;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: scroll;
+}
+.image-manipulator > .patient-pic > img
+{
+      position: absolute;
+      top:50%;
+      left:50%;
+      transform: translateX(-50%) translateY(-50%);
+}
+dialog
+{
+      width: 75%;
+      height: 75%;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      border-radius: 20px;
+}
+.dialog
+{
+      height: 100%;
+      display: grid;
+      grid-template-rows: 2rem 1fr;
+      justify-items: center;
+}
+.dialog-bar
+{
+      width: 100%;
+      text-align: center;
+      position: relative;
+      font-size: 2rem;
+      font-weight: 700;
+}
+.dialog-cancel
+{
+      position: absolute;
+      right: 13px;
+      top : 0%;
 }
