@@ -98,7 +98,23 @@ class Socket
                   res =>{
                         return res.data;
                   }
+            );
+      }
+      dicom(params)
+      {
+            let req = this.request(
+                  'get',
+                  endpoints.DICOM,
+                  params,
+                  undefined,
+                  undefined,
+                  undefined,
             )
+            return req.then(
+                  res=>{
+                        return res.data;
+                  }
+            );
       }
       request(method, uri, params = null, header = null, data=null, responseType = 'json')
       {
@@ -114,6 +130,7 @@ class Socket
             {
                   Object.assign(req_header,{"Authorization" : this._token});
             }
+            console.log(baseURL+", "+responseType);
             const req = axios(
                   {
                         method: method,

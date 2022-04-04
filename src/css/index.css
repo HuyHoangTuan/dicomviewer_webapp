@@ -6,6 +6,7 @@
 {
       padding: 5px;
       border: 1px solid #fff2;
+      user-select: none;
 }
 [id|='btn']:hover
 {
@@ -87,7 +88,7 @@ body
       position: relative;
       width: 100%;
       height: 100%;
-      overflow: scroll;
+      /*overflow: scroll;*/
 }
 .image-manipulator > .patient-pic > img
 {
@@ -122,7 +123,32 @@ dialog
 }
 .dialog-cancel
 {
+      cursor: pointer;
       position: absolute;
       right: 13px;
       top : 0%;
+}
+.cornerstone-canvas
+{
+      width: 100% !important;
+      height: 100% !important;
+}
+.btn-active
+{
+      background-color: rgba(75, 152, 241, 0.308);
+}
+.patient-pic-pan-active
+{
+      cursor: grab;
+}
+.zoom-lens-active{
+      display: block !important;
+}
+.zoom-lens
+{
+      display: none;
+      position: absolute;
+      border: 1px solid #d4d4d4;
+      width: 150px;
+      height: 150px;
 }

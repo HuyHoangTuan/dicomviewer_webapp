@@ -11,6 +11,10 @@ class PACS
             this._host = "127.0.0.1:8080";
             this._socket = new socket.Socket(this._protocol+"//"+this._host);
       }
+      baseURL()
+      {
+            return this._protocol+"//"+this._host;
+      }
       login(username, password, callback)
       {
             return util.andCall(this._socket.login(username, password), callback);
@@ -44,6 +48,13 @@ class PACS
                   this._socket.dic2png({
                         SOPInstanceUID: SOPInstanceUID
                   }),
+                  callback
+            )
+      }
+      dicom(SOPInstanceUID, callback)
+      {
+            return util.andCall(
+                  this._socket.dicom({SOPInstanceUID: SOPInstanceUID}),
                   callback
             )
       }
@@ -86,6 +97,12 @@ export function getPatients(
             callback)
 }
 
+export function getPatientPicUrl(
+      SOPInstanceUID
+)
+{
+      return PACS_SERVER.baseURL()+"/"+endpoints.DIC2PNG+"?"+"SOPInstanceUID"+"="+SOPInstanceUID;
+}
 export function getPatient(
       SOPInstanceUID,
       callback
@@ -109,3 +126,15 @@ export function getPatientPic(
             callback
       )
 }
+export function getPatientDicomFile(
+      SOPInstanceUID,
+      callback
+)
+{
+      console.log("GET PATIENT DICOM:", SOPInstanceUID);
+      return PACS_SERVER.dicom(
+            SOPInstanceUID,
+            callback
+      )
+}
+

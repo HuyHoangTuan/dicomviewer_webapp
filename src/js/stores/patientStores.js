@@ -1,7 +1,7 @@
 import Reflux from "reflux";
 import React from 'react';
 import * as patientActions from '../actions/patientActions';
-import { getPatient, getPatientPic } from "../handlers/requestHandlers";
+import { getPatient, getPatientPic, getPatientDicomFile, getPatientPicUrl } from "../handlers/requestHandlers";
 
 class patientStores extends Reflux.Store
 {
@@ -31,7 +31,7 @@ class patientStores extends Reflux.Store
                               this.trigger(
                                     {
                                           success: true,
-                                          pic: false,
+                                          info: true,
                                           data: value,
                                     }
                               )
@@ -57,6 +57,7 @@ class patientStores extends Reflux.Store
                                     {
                                           success: true,
                                           pic: true,
+                                          url: getPatientPicUrl(SOPInstanceUID),
                                           data: value,
                                     }
                               )
@@ -64,6 +65,31 @@ class patientStores extends Reflux.Store
                         }
                   }
             )
+            /*getPatientDicomFile(
+                  SOPInstanceUID,
+                  (error, value) => {
+                        if(error)
+                        {
+                              this.trigger(
+                                    {
+                                          success: false,
+                                    }
+                              )
+                              return;
+                        }
+                        if(value)
+                        {
+                              this.trigger(
+                                    {
+                                          success: true,
+                                          dicom: true,
+                                          data: value,
+                                    }
+                              )
+                              return;
+                        }
+                  }
+            )*/
       }
 
 }

@@ -25,8 +25,13 @@ class patientInforView extends React.Component
       }
       render()
       {
-            var fetchedData = this.props.data.DATA;
+            var fetchedData;
             var fields = {};
+            
+            if(this.props.data !== undefined)
+            {
+                  fetchedData = this.props.data.DATA;
+            }
             if(fetchedData)
             {
                   fetchedData.map(

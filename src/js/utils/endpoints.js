@@ -8,6 +8,7 @@ const Endpoints = Object.freeze(
             SEARCHDIM: "searchDIM",
             DUMP: "dump",
             DIC2PNG: "dic2png",
+            DICOM: "dicom",
       }
 );
 exports.default = Endpoints;
@@ -16,3 +17,4 @@ exports.LOGOUT = Endpoints.LOGOUT;
 exports.SEARCHDIM = Endpoints.SEARCHDIM;
 exports.DUMP = Endpoints.DUMP;
 exports.DIC2PNG = Endpoints.DIC2PNG;
+exports.DICOM = Endpoints.DICOM;

@@ -10,9 +10,9 @@ class patientDetailView extends React.Component
       constructor(props)
       {
             super(props);
-            this._ref = React.createRef();
+            this._detail = React.createRef();
+
             this.state = {
-                  data:{},
                   status: "loading",
             }
             this._uid = props.params.uid;
@@ -44,16 +44,32 @@ class patientDetailView extends React.Component
             if(event.success === false)
             {
                   return;
-            }                                 
-            if(event.success === true && event.pic === false)                 
+            }         
+                       
+            if(event.success === true && event.info === true)                 
             {
                   this.setState({data: event.data});
+                  ///return;
             }
             if(event.success === true && event.pic === true)
             {
                   
-                  this.setState({pic: event.data});
+                  this.setState({pic: event.data, picUrl: event.url});
+                  ///return;
             }
+            /*if(event.success === true && event.dicom === true)
+            {
+                  this.setState({dicom: event.data});
+                  ///return;
+            }*/
+            ///console.log(this.state.data +", "+this.state.pic+", "+this.state.dicom); 
+            if(this.state.data !== undefined 
+                  && this.state.pic !== undefined 
+                  /*&& this.state.dicom !== undefined*/)
+            {
+                  console.log("Done!");
+            }
+            else console.log("loading");
       }
       handleClick(event)
       {
@@ -66,12 +82,13 @@ class patientDetailView extends React.Component
                         
                         <PatientPicView
                               data = {this.state.pic}
-                              parentRef = {this._ref}
+                              url = {this.state.picUrl}
+                              parentRef = {this._detail}
                         />
-                        <dialog ref={this._ref}>
+                        <dialog ref={this._detail}>
                               <PatientInforView
                                     data = {this.state.data}
-                                    parentRef = {this._ref}
+                                    parentRef = {this._detail}
                               />
                         </dialog>
                         
