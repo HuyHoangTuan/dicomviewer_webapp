@@ -81,7 +81,8 @@ class patientDetailView extends React.Component
                   <div className='patient-detail'>
                         
                         <PatientPicView
-                              data = {this.state.pic}
+                              data = {this.state.data}
+                              pic = {this.state.pic}
                               url = {this.state.picUrl}
                               parentRef = {this._detail}
                         />

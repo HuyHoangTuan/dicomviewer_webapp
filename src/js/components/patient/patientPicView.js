@@ -1,23 +1,31 @@
 import React from "react";
 import "../../../css/index.css";
+
 import SearchIcon from '@mui/icons-material/Search';
 import FlipIcon from '@mui/icons-material/Flip';
-import FlipToBackIcon from '@mui/icons-material/FlipToBack';
 import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PanToolAltIcon from '@mui/icons-material/PanToolAlt';
-import * as cornerstone from 'cornerstone-core'
-import * as cornerstoneWebImageLoader from "cornerstone-web-image-loader";
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import InvertColorsIcon from '@mui/icons-material/InvertColors';
 import LensBlurIcon from '@mui/icons-material/LensBlur';
-import { useThemeWithoutDefault } from "@mui/system";
+import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
+
+import * as cornerstone from 'cornerstone-core'
+import * as cornerstoneWebImageLoader from "cornerstone-web-image-loader";
+import cornerstoneTools from 'cornerstone-tools';
+import cornerstoneMath from 'cornerstone-math';
+import Hammer from 'hammerjs';
+
 
 
 /// set-up loader for cornerstone - web image
 cornerstoneWebImageLoader.external.cornerstone = cornerstone;
+cornerstoneTools.external.cornerstone = cornerstone;
+cornerstoneTools.external.Hammer = Hammer;
+cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
 
 
 class patientPicView extends React.Component
@@ -25,8 +33,23 @@ class patientPicView extends React.Component
       constructor(props)
       {
             super(props);
+
+            /// activate cornerstoneTools
+            cornerstoneTools.init();
+            console.log(cornerstoneTools.disableLogger());
+            this._lengthTool = cornerstoneTools.LengthTool;
+            this._magnifyTool  = cornerstoneTools.MagnifyTool;
+            
+            /// default value
+            this._defaultPatientInfo = {};
+            this._defaultRowSpacing = 1.0;
+            this._defaultColSpacing = 1.0;
+            this._defaultImage = undefined;
+
+            /// default funtions
             this._defaultMoveLens = null;
             this._defaultScale = 1.0;
+
             this.handleDetailBtn = this.handleDetailBtn.bind(this);    
             this.handlePan = this.handlePan.bind(this);
             this.handleZoom = this.handleZoom.bind(this);
@@ -40,6 +63,7 @@ class patientPicView extends React.Component
             this.handleRotateRight = this.handleRotateRight.bind(this);
             this.handleVerticalFlip = this.handleVerticalFlip.bind(this);
             this.handleHorizontalFlip = this.handleHorizontalFlip.bind(this);
+            this.handleLength = this.handleLength.bind(this);
 
             this._dicomImg = React.createRef();
             this._zoom = React.createRef();
@@ -52,6 +76,7 @@ class patientPicView extends React.Component
             this._rotateLeft = React.createRef();
             this._vFlip = React.createRef();
             this._hFlip = React.createRef();
+            this._length = React.createRef();
 
       }
       handleMouseWheel(event)
@@ -113,6 +138,10 @@ class patientPicView extends React.Component
             {
                   this._pan.current.classList.toggle("btn-active", false);
                   this._dicomImg.current.classList.toggle("patient-pic-pan-active", false);
+                  if(object!=this._length)
+                  {
+                        document.removeEventListener('mousewheel', this.handleMouseWheel);
+                  }
             }
 
             if(object!=this._reset)
@@ -132,7 +161,20 @@ class patientPicView extends React.Component
                   this._zoom.current.classList.toggle("btn-active", false);
                   document.querySelector(".zoom-lens").classList.toggle("zoom-lens-active", false);
                   document.querySelector(".zoom-lens").removeEventListener('mousemove', this._defaultMoveLens);
-            }/*if(object != this._interpolation)
+            }
+            if(object != this._length)
+            {
+                  this._length.current.classList.toggle("btn-active", false);
+                  cornerstoneTools.setToolEnabledForElement(
+                        this._dicomImg.current,
+                        'Length',
+                        {
+                              mouseButtonMask: 1,
+                        },
+                        ['Mouse']
+                  );
+            }
+            /*if(object != this._interpolation)
                   this._interpolation.current.classList.toggle("btn-active", false);*/
 
             /*if(object!= this._rotateLeft)
@@ -148,14 +190,24 @@ class patientPicView extends React.Component
 
             this._pan.current.classList.toggle("btn-active", true);
             this._dicomImg.current.classList.toggle("patient-pic-pan-active",true);
+            document.addEventListener('mousewheel',this.handleMouseWheel , {passive: false});
       }
 
       /// have to finish 
-      handleZoom(event)
+      handleZoom(event) 
       {
             this.handleTurnOffToggle(this._zoom);
             this._zoom.current.classList.toggle("btn-active", true);
-            var zoomLens = document.querySelector(".zoom-lens");
+            cornerstoneTools.setToolActiveForElement(
+                  this._dicomImg.current,
+                  'Magnify',
+                  {
+                        mouseButtonMask: 1,
+                  }
+                  ,['Mouse']
+
+            );
+            /*var zoomLens = document.querySelector(".zoom-lens");
             zoomLens.style.top = '0px';
             zoomLens.style.left = '0px';
             zoomLens.classList.toggle("zoom-lens-active", true);
@@ -193,7 +245,7 @@ class patientPicView extends React.Component
             }
             this._defaultMoveLens = moveLens;
             this._dicomImg.current.addEventListener('mousemove', moveLens);
-            zoomLens.addEventListener('mousemove', moveLens);
+            zoomLens.addEventListener('mousemove', moveLens);*/
       }
       handlePicMouseDown(event)
       {
@@ -277,6 +329,19 @@ class patientPicView extends React.Component
             viewPort.invert = !viewPort.invert;
             cornerstone.setViewport(this._dicomImg.current, viewPort);
       }
+      handleLength(event)
+      {
+            this.handleTurnOffToggle(this._length);
+            this._length.current.classList.toggle("btn-active", true);
+            cornerstoneTools.setToolActiveForElement(
+                  this._dicomImg.current,
+                  'Length',
+                  {
+                        mouseButtonMask: 1,
+                  },
+                  ['Mouse']
+            );
+      }
       handleReset(event)
       {
             this.handleTurnOffToggle(this._reset);
@@ -294,7 +359,7 @@ class patientPicView extends React.Component
             }
             catch(error)
             {
-                  console.log(error);
+                  ///console.log(error);
                   return;
             }
             
@@ -306,24 +371,42 @@ class patientPicView extends React.Component
             /// png
             var base64ImgageString;
             var srcValue;
-            if(this.props.data)
+            if(this.props.pic)
             {
-                  base64ImgageString = Buffer.from(this.props.data, 'binary').toString('base64');
+                  base64ImgageString = Buffer.from(this.props.pic, 'binary').toString('base64');
                   srcValue = "data:img/png;base64,"+base64ImgageString;
                   document.querySelector('.zoom-lens').style.backgroundImage = `url(${srcValue})`;
 
             }
             
+            /// data
+            if(this.props.data)
+            {
+                  this._defaultPatientInfo = this.props.data.DATA[0].results.fields;
+                  var spacingData = this._defaultPatientInfo['PixelSpacing'].split('\\');
+                  this._defaultRowSpacing = spacingData[0];
+                  this._defaultColSpacing = spacingData[1];
+            }
             /// dicom
             var picUrl;
             if(this.props.url)
             {
                   picUrl = this.props.url;
                   cornerstone.enable(this._dicomImg.current);
+                  cornerstoneTools.addToolForElement(this._dicomImg.current, this._lengthTool);
+                  cornerstoneTools.addToolForElement(this._dicomImg.current, this._magnifyTool); 
                   cornerstone.loadImage(picUrl).then((image) => {
+                        
                         document.querySelector('.zoom-lens').style.backgroundSize = `${this._dicomImg.current.offsetWidth}px ${this._dicomImg.current.offsetHeight}px`;
+                        
                         cornerstone.displayImage(this._dicomImg.current, image);
+                        
                         this._defaultScale = cornerstone.getViewport(this._dicomImg.current).scale;
+                        image.columnPixelSpacing = parseFloat(this._defaultColSpacing);
+                        image.rowPixelSpacing = parseFloat(this._defaultRowSpacing);
+                        this._defaultImage = image;
+                        
+                        
                         ///console.log(cornerstone.getViewport(this._dicomImg.current));
                   })
             }
@@ -413,6 +496,17 @@ class patientPicView extends React.Component
                                     </span>
 
                               </div>
+                              <div id = "btn-length"
+                                    onClick={this.handleLength}
+                                    ref = {this._length}
+                              >
+                                    <HorizontalRuleIcon color = "primary">
+
+                                    </HorizontalRuleIcon>
+                                    <span>
+                                          Length
+                                    </span>
+                              </div>
                               <div id = "btn-reset" 
                                     onClick={this.handleReset}
                                     ref = {this._reset}
@@ -435,8 +529,10 @@ class patientPicView extends React.Component
                                           Detail
                                     </span>
                               </div>
+                              
                         </div>
                         <div 
+                              id="patient-pic-01"
                               className="patient-pic"
                               onContextMenu={() => {return false;}}
                               onMouseDown={this.handlePicMouseDown}

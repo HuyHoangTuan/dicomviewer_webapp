@@ -130,7 +130,7 @@ class Socket
             {
                   Object.assign(req_header,{"Authorization" : this._token});
             }
-            console.log(baseURL+", "+responseType);
+            ///console.log(baseURL+", "+responseType);
             const req = axios(
                   {
                         method: method,
